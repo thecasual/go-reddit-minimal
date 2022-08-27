@@ -11,9 +11,8 @@
 package main
 
 import (
-	"fmt"
+    "fmt"
     "github.com/thecasual/go-reddit-minimal/reddit"
-
 )
 
 const (
