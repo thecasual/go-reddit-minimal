@@ -1,4 +1,4 @@
-#
+# Minimal Reddit API client written in Go
 
 ### Get:
 ```go get -u github.com/thecasual/go-reddit-minimal```
