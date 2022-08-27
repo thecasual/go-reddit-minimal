@@ -16,12 +16,12 @@ func TestBuildClient(t *testing.T) {
 
 func TestGetMe(t *testing.T) {
 	client := NewClient(userName, password, url, clientID, clientSecret)
-	got := getMe(*client)
+	got := client.GetMe()
 	if got == "" {
 		t.Errorf("Error /api/v1/me")
 	} else {
 		fmt.Println("Query /api/v1/me: Success")
 	}
 
-	fmt.Printf("Hello, %s", got)
+	fmt.Printf("Evening, %s", client.GetMe())
 }

@@ -44,7 +44,7 @@ func NewClient(userName string,
 		oauthUrl:         "https://oauth.reddit.com",
 	}
 
-	client.token = GetToken(*client)
+	client.token = client.getToken()
 	return client
 }
 
@@ -94,7 +94,7 @@ func doRequest(client redditClient, method string, url string, body string) (*ht
 }
 
 // Return bearer token
-func GetToken(client redditClient) string {
+func (client redditClient) getToken() string {
 	var stringdata = fmt.Sprintf("grant_type=password&username=%s&password=%v", client.userName, client.password)
 	resp, _ := doRequest(client, "POST", fmt.Sprintf("%s/api/v1/access_token", client.url), stringdata)
 	json := processJSON(resp)
@@ -113,7 +113,7 @@ func processJSON(resp *http.Response) map[string]interface{} {
 }
 
 // api/v1/me
-func GetMe(client redditClient) string {
+func (client redditClient) GetMe() string {
 	req, _ := doRequest(client, "GET", fmt.Sprintf("%s/api/v1/me", client.oauthUrl), "")
 	json := processJSON(req)
 	return json["name"].(string)
