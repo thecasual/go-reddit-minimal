@@ -1,3 +1,3 @@
-module github.com/thecasual/go-reddit-minimal/v1
+module github.com/thecasual/go-reddit-minimal
 
 go 1.19
