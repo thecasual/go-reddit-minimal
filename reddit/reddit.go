@@ -113,7 +113,7 @@ func processJSON(resp *http.Response) map[string]interface{} {
 }
 
 // api/v1/me
-func getMe(client redditClient) string {
+func GetMe(client redditClient) string {
 	req, _ := doRequest(client, "GET", fmt.Sprintf("%s/api/v1/me", client.oauthUrl), "")
 	json := processJSON(req)
 	return json["name"].(string)
