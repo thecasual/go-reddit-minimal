@@ -5,6 +5,7 @@ import (
 	"testing"
 )
 
+// Build Client
 func TestBuildClient(t *testing.T) {
 	client := NewClient(userName, password, url, clientID, clientSecret)
 	if client.token == "" {
@@ -14,6 +15,7 @@ func TestBuildClient(t *testing.T) {
 	}
 }
 
+// Get Self
 func TestGetMe(t *testing.T) {
 	client := NewClient(userName, password, url, clientID, clientSecret)
 	got := client.GetMe()
@@ -24,4 +26,10 @@ func TestGetMe(t *testing.T) {
 	}
 
 	fmt.Printf("Evening, %s", client.GetMe())
+}
+
+// Search
+func TestSubredditsearch(t *testing.T) {
+	client := NewClient(userName, password, url, clientID, clientSecret)
+	client.Search()
 }

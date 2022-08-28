@@ -2,15 +2,12 @@ package reddit
 
 import (
 	"bytes"
-	"encoding/json"
 	"fmt"
-	"io"
-	"log"
 	"net/http"
 	"time"
 )
 
-// Define client
+// Define Client
 type redditClient struct {
 	c                *http.Client
 	userName         string
@@ -23,7 +20,7 @@ type redditClient struct {
 	oauthUrl         string
 }
 
-// Build client
+// Build Client
 func NewClient(userName string,
 	password string,
 	url string,
@@ -90,6 +87,14 @@ func doRequest(client redditClient, method string, url string, body string) (*ht
 		}
 	}
 
+	/*
+		reqDump, err := httputil.DumpRequest(req, true)
+		fmt.Println(string(reqDump))
+
+		responseDump, _ := httputil.DumpResponse(resp, true)
+		fmt.Println(string(responseDump))
+	*/
+
 	return resp, err
 }
 
@@ -97,24 +102,6 @@ func doRequest(client redditClient, method string, url string, body string) (*ht
 func (client redditClient) getToken() string {
 	var stringdata = fmt.Sprintf("grant_type=password&username=%s&password=%v", client.userName, client.password)
 	resp, _ := doRequest(client, "POST", fmt.Sprintf("%s/api/v1/access_token", client.url), stringdata)
-	json := processJSON(resp)
+	json := processJSONReq(resp)
 	return json["access_token"].(string)
-}
-
-// Process JSON in http.Response
-func processJSON(resp *http.Response) map[string]interface{} {
-	body, _ := io.ReadAll(resp.Body)
-	body_str := string(body)
-	var objmap map[string]interface{}
-	if err := json.Unmarshal([]byte(body_str), &objmap); err != nil {
-		log.Fatal(err)
-	}
-	return objmap
-}
-
-// api/v1/me
-func (client redditClient) GetMe() string {
-	req, _ := doRequest(client, "GET", fmt.Sprintf("%s/api/v1/me", client.oauthUrl), "")
-	json := processJSON(req)
-	return json["name"].(string)
 }
