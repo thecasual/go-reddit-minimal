@@ -7,7 +7,7 @@ import (
 
 // Build Client
 func TestBuildClient(t *testing.T) {
-	client := NewClient(userName, password, url, clientID, clientSecret)
+	client := NewClient(userName, password, redditUrl, clientID, clientSecret)
 	if client.token == "" {
 		t.Errorf("Token is empty")
 	} else {
@@ -17,7 +17,7 @@ func TestBuildClient(t *testing.T) {
 
 // Get Self
 func TestGetMe(t *testing.T) {
-	client := NewClient(userName, password, url, clientID, clientSecret)
+	client := NewClient(userName, password, redditUrl, clientID, clientSecret)
 	got := client.GetMe()
 	if got == "" {
 		t.Errorf("Error /api/v1/me")
@@ -30,6 +30,6 @@ func TestGetMe(t *testing.T) {
 
 // Search
 func TestSubredditsearch(t *testing.T) {
-	client := NewClient(userName, password, url, clientID, clientSecret)
+	client := NewClient(userName, password, redditUrl, clientID, clientSecret)
 	client.Search()
 }

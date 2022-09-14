@@ -2,17 +2,19 @@ package reddit
 
 import (
 	"bytes"
+	"crypto/tls"
 	"fmt"
 	"net/http"
+	"net/http/httputil"
 	"time"
 )
 
 // Define Client
 type redditClient struct {
-	c                *http.Client
+	c                http.Client
 	userName         string
 	password         string
-	url              string
+	redditUrl        string
 	clientID         string
 	clientSecret     string
 	token            string
@@ -23,17 +25,21 @@ type redditClient struct {
 // Build Client
 func NewClient(userName string,
 	password string,
-	url string,
+	redditUrl string,
 	clientID string,
 	clientSecret string) *redditClient {
 
-	c := &http.Client{}
+	transport := http.Transport{
+		Proxy:           http.ProxyURL(proxyUrl),
+		TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
+	}
+	c := &http.Client{Transport: &transport}
 
 	client := &redditClient{
-		c:                c,
+		c:                *c,
 		userName:         userName,
 		password:         password,
-		url:              url,
+		redditUrl:        redditUrl,
 		clientID:         clientID,
 		clientSecret:     clientSecret,
 		token:            "",
@@ -88,11 +94,11 @@ func doRequest(client redditClient, method string, url string, body string) (*ht
 	}
 
 	/*
-		reqDump, err := httputil.DumpRequest(req, true)
-		fmt.Println(string(reqDump))
+	reqDump, err := httputil.DumpRequest(req, true)
+	fmt.Println(string(reqDump))
 
-		responseDump, _ := httputil.DumpResponse(resp, true)
-		fmt.Println(string(responseDump))
+	responseDump, _ := httputil.DumpResponse(resp, true)
+	fmt.Println(string(responseDump))
 	*/
 
 	return resp, err
@@ -101,7 +107,7 @@ func doRequest(client redditClient, method string, url string, body string) (*ht
 // Return bearer token
 func (client redditClient) getToken() string {
 	var stringdata = fmt.Sprintf("grant_type=password&username=%s&password=%v", client.userName, client.password)
-	resp, _ := doRequest(client, "POST", fmt.Sprintf("%s/api/v1/access_token", client.url), stringdata)
+	resp, _ := doRequest(client, "POST", fmt.Sprintf("%s/api/v1/access_token", client.redditUrl), stringdata)
 	json := processJSONReq(resp)
 	return json["access_token"].(string)
 }
